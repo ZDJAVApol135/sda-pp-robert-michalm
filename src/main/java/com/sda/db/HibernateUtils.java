@@ -24,7 +24,7 @@ public class HibernateUtils {
     private static SessionFactory createSessionFactory() {
         Configuration configuration = new Configuration()
                 .addAnnotatedClass(User.class);
-
+                
         return configuration.buildSessionFactory();
     }
 
