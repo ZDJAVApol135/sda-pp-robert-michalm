@@ -41,4 +41,14 @@ public class UsersDAO {
             return session.get(User.class, username);
         }
     }
+
+    public User update(User user) {
+        Session session = HibernateUtils.openSession();
+        Transaction transaction = session.beginTransaction();
+        User updatedUser = session.merge(user);
+        transaction.commit();
+        session.close();
+
+        return updatedUser;
+    }
 }
