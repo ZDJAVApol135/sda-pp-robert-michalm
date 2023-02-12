@@ -109,7 +109,7 @@ public class UsersDAOTest {
     }
 
     @Test
-    void testUpdateHappyPath(){
+    void testUpdateHappyPath() {
         //given
         int updatedAge = 100;
         String updatedName = "Lukasz";
@@ -132,6 +132,33 @@ public class UsersDAOTest {
         Assertions.assertEquals(user.getSurname(), updatedUser.getSurname());
         Assertions.assertEquals(user.getPassword(), updatedUser.getPassword());
         Assertions.assertEquals(user.getEmail(), updatedUser.getEmail());
+    }
+
+    @Test
+    void testExistsUserNotFound() {
+        // given
+        String nonExistingUsername = "NON EXISTING USERNAME";
+
+        // when
+        boolean exists = usersDAO.exists(nonExistingUsername);
+
+        // then
+        Assertions.assertFalse(exists);
+    }
+
+    @Test
+    void testExistsUserFound() {
+        // given
+        String existingUsername = UUID.randomUUID().toString();
+        User userToCreate = createUser(existingUsername);
+
+        usersDAO.create(userToCreate);
+
+        // when
+        boolean exists = usersDAO.exists(existingUsername);
+
+        // then
+        Assertions.assertTrue(exists);
     }
 
     private User createUser(String username) {
