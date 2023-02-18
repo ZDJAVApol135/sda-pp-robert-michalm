@@ -88,4 +88,18 @@ public class UsersService {
         }
         usersDAO.create(user);
     }
+
+    public UserDTO update(User user, String username) {
+        if (user.getUsername().equals(username)) {
+            throw new UsernameConflictException("Usernames dose not match!");
+        }
+        boolean exists = usersDAO.exists(username);
+        if (!exists) {
+            String message = "User with username: '%s' not found".formatted(username);
+            throw new NotFoundException(message);
+        }
+        User updatedUser = usersDAO.update(user);
+        UserDTO userDTO = userMapper.map(updatedUser);
+        return userDTO;
+    }
 }
