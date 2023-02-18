@@ -1,13 +1,22 @@
 package com.sda.controller;
 
 import com.sda.dto.UserDTO;
+//import com.sda.exception.NotFoundException;
+import com.sda.exeption.NotFoundException;
 import com.sda.service.UsersService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+
+@Slf4j
 @RequiredArgsConstructor
 public class UsersController {
+
+//    private static final Logger log = LoggerFactory.getLogger(UsersController.class);
 
     private final UsersService usersService;
 
@@ -24,7 +33,12 @@ public class UsersController {
     }
 
     public void findByUsername(String username) {
-
+        try {
+            UserDTO userDTO = usersService.findByUsername(username);
+            System.out.printf("User found: %s%n", userDTO);
+        } catch (NotFoundException ex) {
+            log.error("NotFoundException: {}", ex.getMessage());
+        }
     }
 
 }
