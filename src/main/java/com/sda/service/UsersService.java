@@ -2,6 +2,8 @@ package com.sda.service;
 
 import com.sda.dao.UsersDAO;
 import com.sda.dto.UserDTO;
+//import com.sda.exception.NotFoundException;
+//import com.sda.exception.UsernameConflictException;
 import com.sda.exeption.NotFoundException;
 import com.sda.exeption.UsernameConflictException;
 import com.sda.mapper.UserMapper;
@@ -17,7 +19,7 @@ public class UsersService {
     private final UsersDAO usersDAO;
     private final UserMapper userMapper;
 
-    public List<UserDTO> findAll(){
+    public List<UserDTO> findAll() {
 //        List<User> users = usersDAO.findAll();
 
 //        List<UserDTO> userDTOS = new ArrayList<>();
@@ -47,37 +49,16 @@ public class UsersService {
                 .toList();
     }
 
-//    public UserDTO findByUsername(String username) {
-//
-//        User user = usersDAO.findByUsername(username);
-//
-//        if (user == null) {
-//            String massage = "User with username: '%s' not found".formatted(username);
-//            throw new NotFoundException(massage);
-//        }
-//
-//        UserDTO userDTO = userMapper.map(user);
-//        return userDTO;
-//    }
-
     public UserDTO findByUsername(String username) {
+
         User user = usersDAO.findByUsername(username);
-        boolean userNotExists = user == null;
-        throwNotFoundExceptionIfTrue(username, userNotExists);
-        UserDTO userDTO = userMapper.map(user);
-        return userDTO;
+        throwNotFoundExceptionIfTrue(username, user == null);
+        return userMapper.map(user);
     }
 
     public void deleteByUsername(String username) {
         boolean deleted = usersDAO.delete(username);
         throwNotFoundExceptionIfTrue(username, !deleted);
-    }
-
-    private void throwNotFoundExceptionIfTrue(String username, boolean condition) {
-        if (condition) {
-            String message = "User with username: '%s' not found!".formatted(username);
-            throw new NotFoundException(message);
-        }
     }
 
     public void create(User user) {
@@ -94,12 +75,16 @@ public class UsersService {
             throw new UsernameConflictException("Usernames dose not match!");
         }
         boolean exists = usersDAO.exists(username);
-        if (!exists) {
+        throwNotFoundExceptionIfTrue(username, !exists);
+
+        User updatedUser = usersDAO.update(user);
+        return userMapper.map(updatedUser);
+    }
+
+    private void throwNotFoundExceptionIfTrue(String username, boolean condition) {
+        if (condition) {
             String message = "User with username: '%s' not found".formatted(username);
             throw new NotFoundException(message);
         }
-        User updatedUser = usersDAO.update(user);
-        UserDTO userDTO = userMapper.map(updatedUser);
-        return userDTO;
     }
 }
