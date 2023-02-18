@@ -2,13 +2,12 @@ package com.sda.service;
 
 import com.sda.dao.UsersDAO;
 import com.sda.dto.UserDTO;
-import com.sda.exeption.NotFoundExeption;
+import com.sda.exeption.NotFoundException;
 import com.sda.mapper.UserMapper;
 import com.sda.model.User;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
-import java.util.function.Function;
 
 
 @RequiredArgsConstructor
@@ -53,7 +52,7 @@ public class UsersService {
 
         if (user == null) {
             String massage = "User with username: '%s' not found".formatted(username);
-            throw new NotFoundExeption(massage);
+            throw new NotFoundException(massage);
         }
 
         UserDTO userDTO = userMapper.map(user);
