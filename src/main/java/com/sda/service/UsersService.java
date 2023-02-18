@@ -46,16 +46,36 @@ public class UsersService {
                 .toList();
     }
 
+//    public UserDTO findByUsername(String username) {
+//
+//        User user = usersDAO.findByUsername(username);
+//
+//        if (user == null) {
+//            String massage = "User with username: '%s' not found".formatted(username);
+//            throw new NotFoundException(massage);
+//        }
+//
+//        UserDTO userDTO = userMapper.map(user);
+//        return userDTO;
+//    }
+
     public UserDTO findByUsername(String username) {
-
         User user = usersDAO.findByUsername(username);
-
-        if (user == null) {
-            String massage = "User with username: '%s' not found".formatted(username);
-            throw new NotFoundException(massage);
-        }
-
+        boolean userNotExists = user == null;
+        throwNotFoundExceptionIfTrue(username, userNotExists);
         UserDTO userDTO = userMapper.map(user);
         return userDTO;
+    }
+
+    public void deleteByUsername(String username) {
+        boolean deleted = usersDAO.delete(username);
+        throwNotFoundExceptionIfTrue(username, !deleted);
+    }
+
+    private void throwNotFoundExceptionIfTrue(String username, boolean condition) {
+        if (condition) {
+            String message = "User with username: '%s' not found!".formatted(username);
+            throw new NotFoundException(message);
+        }
     }
 }
