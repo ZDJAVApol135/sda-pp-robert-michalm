@@ -52,7 +52,7 @@ public class UsersService {
         User user = usersDAO.findByUsername(username);
 
         if (user == null) {
-            String massage = "User with username: '%s' not found".formatted(username)
+            String massage = "User with username: '%s' not found".formatted(username);
             throw new NotFoundExeption(massage);
         }
 
