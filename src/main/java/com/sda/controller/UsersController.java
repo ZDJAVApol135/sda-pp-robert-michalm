@@ -2,12 +2,13 @@ package com.sda.controller;
 
 import com.sda.dto.UserDTO;
 //import com.sda.exception.NotFoundException;
+//import com.sda.exception.UsernameConflictException;
 import com.sda.exeption.NotFoundException;
+import com.sda.exeption.UsernameConflictException;
+import com.sda.model.User;
 import com.sda.service.UsersService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -41,4 +42,33 @@ public class UsersController {
         }
     }
 
+    public void deleteByUsername(String username) {
+        try {
+            usersService.deleteByUsername(username);
+            System.out.printf("User with username '%s' deleted!%n", username);
+        } catch (NotFoundException ex) {
+            log.error("NotFoundException: {}", ex.getMessage());
+        }
+    }
+
+    public void create(User user) {
+        try {
+            usersService.create(user);
+            System.out.printf("User with username '%s' created!\n", user.getUsername());
+        } catch (UsernameConflictException ex) {
+            log.error("UsernameConflictException: {}", ex.getMessage());
+        }
+    }
+
+    public void update(User user, String username) {
+        try {
+            UserDTO updatedUser = usersService.update(user, username);
+            System.out.printf("User with username '%s' updated!\n", username);
+            System.out.printf("User after update: %s.\n", updatedUser);
+        } catch (UsernameConflictException ex) {
+            log.error("UsernameConflictException: {}", ex.getMessage());
+        } catch (NotFoundException ex) {
+            log.error("NotFoundException: {}", ex.getMessage());
+        }
+    }
 }
